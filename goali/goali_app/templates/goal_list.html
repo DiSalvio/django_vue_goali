@@ -1,0 +1,65 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <title>Goali</title>
+    <link rel="shortcut icon" type="image/png" href="%{ static 'favicon.ico' %}"/>
+  </head>
+
+  <div id='goal-list'>
+    <h1>[[ header ]]</h1>
+
+    <input type="text" v-model.trim="newGoalName" placeholder="Add a new goal">
+    <input type="text" v-model.trim="newGoalDescription" placeholder="Add new goal's description">
+    <ul>
+      <li v-if="newGoalName">[[ newGoalName ]]<p>[[ newGoalDescription ]]</p></li>
+      <li v-for="goal in goals" :key="goal.id">[[ goal.name ]]<p>[[ goal.description ]]</p></li>
+    </ul>
+
+    <h1>
+      Now
+    </h1>
+
+
+    <form action="/add_goal/" method="post">{% csrf_token %}
+      <input type="text" name="name">
+      <input type="text" name="description">
+      <!-- <input type="radio" name="status" default="Not started"> -->
+      <input type="submit" value="Add Goal">
+    </form>
+    <ul>
+      {% for goal in all_goals %}
+        <li>
+          {{goal.name}}
+          <p>
+            {{goal.description}}
+          </p>
+          <!-- {{goal.status}} -->
+          <form action='/delete_goal/{{goal.id}}/' method='post'>{% csrf_token %}
+            <input type="submit" value="Delete">
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <script src="https://unpkg.com/vue@3"></script>
+  <script>
+    const goalList = Vue.createApp({
+        delimiters: ['[[', ']]'],
+        data() {
+            return {
+                header: "Goals",
+                newGoalName: '',
+                newGoalDescription: '',
+                goals: [
+                    {id: 1, name: "vue frontend in templates", description: ""},
+                    {id: 2, name: "vue frontend in separate app", description: ""},
+                    {id: 3, name: "programming grading", description: "kc2"},
+                    {id: 4, name: "FoS grading", description: "AA groups B"}
+                ]
+            }
+          }
+      })
+      .mount('#goal-list')
+  </script>
+</html>
