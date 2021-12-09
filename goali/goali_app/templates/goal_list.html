@@ -7,12 +7,30 @@
 
   <div id='goal-list'>
     <h1>[[ header ]]</h1>
+    <p v-if="goals.length === 0" >No goals right now, add a new goal!"</p>
 
-    <input type="text" v-model.trim="newGoalName" placeholder="Add a new goal">
-    <input type="text" v-model.trim="newGoalDescription" placeholder="Add new goal's description">
+    <div v-if="editing" id='add-goal-form'>
+      <input @keyup.enter="addGoal" type="text" v-model.trim="newGoalName" placeholder="Add a new goal">
+      <input @keyup.enter="addGoal" type="text" v-model.trim="newGoalDescription" placeholder="Add new goal's description">
+      <button :disabled="newGoalName.length === 0" @click="addGoal" class="btn btn-primary">
+        Add Goal
+      </button>
+      <button @click="toggleEditing" class="btn btn-warning">Done Adding Goals</button>
+    </div>
+
+    <div v-else id="no-goals">
+      <button @click="toggleEditing" class="btn btn-primary">Add Goals</button>
+    </div>
+
     <ul>
       <li v-if="newGoalName">[[ newGoalName ]]<p>[[ newGoalDescription ]]</p></li>
-      <li v-for="goal in goals" :key="goal.id">[[ goal.name ]]<p>[[ goal.description ]]</p></li>
+      <li v-for="goal in reversedGoals" :key="goal.id">
+        [[ goal.name ]]
+        <p>[[ goal.description ]]</p>
+        <button @click="deleteGoal(goal)" class="btn btn-warning">
+          Delete Goal
+        </button>
+      </li>
     </ul>
 
     <h1>
@@ -51,6 +69,7 @@
                 header: "Goals",
                 newGoalName: '',
                 newGoalDescription: '',
+                editing: false,
                 goals: [
                     {id: 1, name: "vue frontend in templates", description: ""},
                     {id: 2, name: "vue frontend in separate app", description: ""},
@@ -58,7 +77,27 @@
                     {id: 4, name: "FoS grading", description: "AA groups B"}
                 ]
             }
-          }
+        },
+        computed: {
+              reversedGoals(){
+                    return [...this.goals].reverse()
+              }
+            },
+        methods: {
+              addGoal() {
+                    this.goals.push({id: this.goals.length+1, name: this.newGoalName, description: this.newGoalDescription})
+                    this.newGoalName = ''
+                    this.newGoalDescription = ''
+              },
+              deleteGoal(goal) {
+                    this.goals.splice(this.goals.indexOf(goal), 1)
+              },
+              toggleEditing() {
+                    this.editing = !this.editing
+                    this.newGoalName = ''
+                    this.newGoalDescription = ''
+              }
+        },
       })
       .mount('#goal-list')
   </script>

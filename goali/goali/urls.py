@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from goali_app.views import goali_app_view, add_goal_view, delete_goal_view
+from goali_app.views import goali_app_view, add_goal_view, delete_goal_view, edit_goal_view
 
 urlpatterns = [
+    path("", goali_app_view),
     path('admin/', admin.site.urls),
     path('goali_app/', goali_app_view),
+    path('edit_goal/<int:goal_id/', edit_goal_view),
     path('add_goal/', add_goal_view),
     path('delete_goal/<int:goal_id>/', delete_goal_view)
 ]

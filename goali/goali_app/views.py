@@ -28,3 +28,10 @@ def delete_goal_view(request, goal_id):
     removed_goal.delete()
     return HttpResponseRedirect('/goali_app/')
     
+def edit_goal_view(request, goal_id):
+    name = request.POST['name']
+    description = request.POST['description']
+    editing_goal = Goal.objects.get(id=goal_id)
+    editing_goal = Goal(name=name, description=description)
+    editing_goal.save()
+    return HttpResponseRedirect('/goali_app/')
